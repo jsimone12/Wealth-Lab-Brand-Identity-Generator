@@ -78,25 +78,43 @@ const GHL_WEBHOOK_URL = 'https://services.leadconnectorhq.com/hooks/DvWTrdD23UD0
 let ghlDebug = null;
 
 try {
-  const ghlRes = await fetch(GHL_WEBHOOK_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ ...formData, brandIdentity }),
-  });
+ const GHL_WEBHOOK_URL = 'https://services.leadconnectorhq.com/hooks/DvWTrdD23UD09zv6GgZj/webhook-trigger/86860bc6-ef18-4486-97f3-d2fccfa3ff68';
 
-  const ghlText = await ghlRes.text();
-  ghlDebug = { status: ghlRes.status, ok: ghlRes.ok, body: ghlText };
-  console.log("GHL_WEBHOOK_RESULT:", ghlDebug);
-} catch (e) {
-  ghlDebug = { error: String(e) };
-  console.log("GHL_WEBHOOK_ERROR:", ghlDebug);
+let ghlDebug = { attempted: false };
+
+if (GHL_WEBHOOK_URL) {
+  ghlDebug.attempted = true;
+
+  try {
+    const ghlRes = await fetch(GHL_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...formData, brandIdentity })
+    });
+
+    const ghlText = await ghlRes.text();
+
+    ghlDebug = {
+      attempted: true,
+      ok: ghlRes.ok,
+      status: ghlRes.status,
+      responseText: ghlText?.slice(0, 500) // keep it short
+    };
+  } catch (e) {
+    ghlDebug = {
+      attempted: true,
+      error: String(e)
+    };
+  }
 }
+
 
     return res.status(200).json({
   success: true,
   brandIdentity,
   ghlDebug
 });
+
 
 
   } catch (error) {
