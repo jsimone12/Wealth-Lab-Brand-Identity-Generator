@@ -73,25 +73,31 @@ Be creative, specific, and strategic. Make sure all recommendations work cohesiv
 
     // Send to GHL webhook if email is provided (you can add webhook URL here)
     // Send to GHL webhook
-const GHL_WEBHOOK_URL = 'https://services.leadconnectorhq.com/hooks/DvWTrdD23UD09zv6GgZj/webhook-trigger/1663ac7c-ce01-4b6e-aaee-1ee8e9f4bd7a';
-if (GHL_WEBHOOK_URL) {
+const GHL_WEBHOOK_URL = 'https://services.leadconnectorhq.com/hooks/DvWTrdD23UD09zv6GgZj/webhook-trigger/86860bc6-ef18-4486-97f3-d2fccfa3ff68';
+
+let ghlDebug = null;
+
+try {
   const ghlRes = await fetch(GHL_WEBHOOK_URL, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    ...formData,
-    brandIdentity
-  })
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ...formData, brandIdentity }),
+  });
+
+  const ghlText = await ghlRes.text();
+  ghlDebug = { status: ghlRes.status, ok: ghlRes.ok, body: ghlText };
+  console.log("GHL_WEBHOOK_RESULT:", ghlDebug);
+} catch (e) {
+  ghlDebug = { error: String(e) };
+  console.log("GHL_WEBHOOK_ERROR:", ghlDebug);
+}
+
+    return res.status(200).json({
+  success: true,
+  brandIdentity,
+  ghlDebug
 });
 
-console.log('GHL status:', ghlRes.status);
-console.log('GHL response:', await ghlRes.text());
-
-}
-    return res.status(200).json({
-      success: true,
-      brandIdentity: brandIdentity
-    });
 
   } catch (error) {
     console.error('Error:', error);
