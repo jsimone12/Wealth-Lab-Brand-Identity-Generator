@@ -75,14 +75,18 @@ Be creative, specific, and strategic. Make sure all recommendations work cohesiv
     // Send to GHL webhook
 const GHL_WEBHOOK_URL = 'https://services.leadconnectorhq.com/hooks/DvWTrdD23UD09zv6GgZj/webhook-trigger/86860bc6-ef18-4486-97f3-d2fccfa3ff68';
 if (GHL_WEBHOOK_URL) {
-  await fetch(GHL_WEBHOOK_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      ...formData,
-      brandIdentity: brandIdentity
-    })
-  }).catch(err => console.error('GHL webhook error:', err));
+  const ghlRes = await fetch(GHL_WEBHOOK_URL, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    ...formData,
+    brandIdentity
+  })
+});
+
+console.log('GHL status:', ghlRes.status);
+console.log('GHL response:', await ghlRes.text());
+
 }
     return res.status(200).json({
       success: true,
