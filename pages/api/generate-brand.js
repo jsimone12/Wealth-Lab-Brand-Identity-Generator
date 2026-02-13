@@ -73,7 +73,7 @@ Be creative, specific, and strategic. Make sure all recommendations work cohesiv
 
     // Send to GHL webhook if email is provided (you can add webhook URL here)
     // Send to GHL webhook
-const GHL_WEBHOOK_URL = 'https://services.leadconnectorhq.com/hooks/DvWTrdD23UD09zv6GgZj/webhook-trigger/86860bc6-ef18-4486-97f3-d2fccfa3ff68';
+const GHL_WEBHOOK_URL = 'https://services.leadconnectorhq.com/hooks/DvWTrdD23UD09zv6GgZj/webhook-trigger/1663ac7c-ce01-4b6e-aaee-1ee8e9f4bd7a';
 if (GHL_WEBHOOK_URL) {
   const ghlRes = await fetch(GHL_WEBHOOK_URL, {
   method: 'POST',
