@@ -61,7 +61,7 @@ IMAGERY DIRECTION:
 
     // --- GHL webhook ---
     const GHL_WEBHOOK_URL =
-      "https://services.leadconnectorhq.com/hooks/DvWTrdD23UD09zv6GgZj/webhook-trigger/86860bc6-ef18-4486-97f3-d2fccfa3ff68";
+      "https://services.leadconnectorhq.com/hooks/DvWTrdD23UD09zv6GgZj/webhook-trigger/4ef24c2c-621c-4837-b8de-df74d2ee7987";
 
     let ghlDebug = { attempted: false };
 
