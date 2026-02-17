@@ -72,6 +72,7 @@ export default function BrandIdentityGenerator() {
       }
 
       setResult(data.brandIdentity);
+      console.log('GHL Webhook Debug:', data.ghlDebug);
     } catch (err) {
       setError('An error occurred. Please try again.');
       console.error(err);
