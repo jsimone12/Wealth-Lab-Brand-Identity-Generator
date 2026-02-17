@@ -59,22 +59,40 @@ export default function BrandIdentityGenerator() {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/generate-brand', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-
       const data = await response.json();
-      
-      if (!data.success) {
-        throw new Error(data.error || 'Failed to generate brand identity');
-      }
 
-      setResult(data.brandIdentity);
-      console.log('GHL Webhook Debug:', data.ghlDebug);
-    } catch (err) {
-      setError('An error occurred. Please try again.');
+if (!data.success) {
+  throw new Error(data.error || 'Failed to generate brand identity');
+}
+
+setResult(data.brandIdentity);
+
+// Send to GHL webhook from browser
+try {
+  await fetch('https://services.leadconnectorhq.com/hooks/DvWTrdD23UD09zv6GgZj/webhook-trigger/4ef24c2c-621c-4837-b8de-df74d2ee7987', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      q1: formData.q1,
+      traits: formData.traits.join(', '),
+      q3: formData.q3,
+      q4: formData.q4,
+      q5: formData.q5,
+      q6: formData.q6,
+      q7_colors: formData.q7_colors,
+      q7_logo: formData.q7_logo,
+      q7_fonts: formData.q7_fonts,
+      q7_other: formData.q7_other,
+      brandIdentity: data.brandIdentity
+    })
+  });
+  console.log('Data sent to GHL successfully');
+} catch (webhookError) {
+  console.error('GHL webhook error:', webhookError);
+}
       console.error(err);
     } finally {
       setLoading(false);
