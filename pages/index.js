@@ -103,6 +103,20 @@ export default function BrandIdentityGenerator() {
 
       setResult(data.brandIdentity);
 
+      // Generate PDF server-side and get a public URL
+      let pdfUrl = '';
+      try {
+        const pdfRes = await fetch('/api/generate-brand-pdf', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ result: data.brandIdentity, firstName: formData.firstName })
+        });
+        const pdfData = await pdfRes.json();
+        if (pdfData.success) pdfUrl = pdfData.pdfUrl;
+      } catch (pdfErr) {
+        console.error('PDF generation error:', pdfErr);
+      }
+
       // Send to GHL webhook from browser
       try {
         await fetch('https://services.leadconnectorhq.com/hooks/DvWTrdD23UD09zv6GgZj/webhook-trigger/7ec91fb0-dc8c-49fc-baa7-722a98f5bf6c', {
@@ -126,7 +140,8 @@ export default function BrandIdentityGenerator() {
             brandIdentity: JSON.stringify(data.brandIdentity),
             primaryColor: data.brandIdentity?.colors?.[0]?.hex || '',
             headingFont: data.brandIdentity?.fonts?.heading?.name || '',
-            bodyFont: data.brandIdentity?.fonts?.body?.name || ''
+            bodyFont: data.brandIdentity?.fonts?.body?.name || '',
+            pdfUrl: pdfUrl
           })
         });
         console.log('Data sent to GHL successfully');
