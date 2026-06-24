@@ -117,6 +117,16 @@ export default function BrandIdentityGenerator() {
         console.error('PDF generation error:', pdfErr);
       }
 
+      // Build prompt-ready snippet for Claude Code
+      const claudeCodePrompt = [
+        'Brand Colors:',
+        ...(data.brandIdentity?.colors || []).map(c => `${c.role} - ${c.name} ${c.hex}`),
+        '',
+        'Fonts:',
+        data.brandIdentity?.fonts?.heading ? `Heading - ${data.brandIdentity.fonts.heading.name}` : '',
+        data.brandIdentity?.fonts?.body ? `Body - ${data.brandIdentity.fonts.body.name}` : ''
+      ].filter(Boolean).join('\n');
+
       // Send to GHL webhook from browser
       try {
         await fetch('https://services.leadconnectorhq.com/hooks/DvWTrdD23UD09zv6GgZj/webhook-trigger/7ec91fb0-dc8c-49fc-baa7-722a98f5bf6c', {
@@ -141,7 +151,8 @@ export default function BrandIdentityGenerator() {
             primaryColor: data.brandIdentity?.colors?.[0]?.hex || '',
             headingFont: data.brandIdentity?.fonts?.heading?.name || '',
             bodyFont: data.brandIdentity?.fonts?.body?.name || '',
-            pdfUrl: pdfUrl
+            pdfUrl: pdfUrl,
+            claudeCodePrompt: claudeCodePrompt
           })
         });
         console.log('Data sent to GHL successfully');

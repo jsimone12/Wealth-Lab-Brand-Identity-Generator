@@ -1,6 +1,36 @@
 import jsPDF from 'jspdf';
 import { put } from '@vercel/blob';
 
+function addColorPalette(doc, colors, startY) {
+  const boxW = 38;
+  const boxH = 26;
+  const gap = 6;
+  const startX = 20;
+  const textColor = '#1A1A1A';
+
+  colors.forEach((c, i) => {
+    const x = startX + i * (boxW + gap);
+
+    doc.setFillColor(c.hex);
+    doc.roundedRect(x, startY, boxW, boxH, 2, 2, 'F');
+
+    doc.setFontSize(7);
+    doc.setTextColor(textColor);
+    doc.text(c.role, x, startY - 3);
+
+    doc.setFontSize(8);
+    doc.setTextColor(c.hex);
+    doc.text(c.hex, x + boxW / 2, startY + boxH + 8, { align: 'center' });
+
+    doc.setFontSize(7);
+    doc.setTextColor(textColor);
+    doc.text(c.name, x + boxW / 2, startY + boxH + 16, { align: 'center' });
+  });
+
+  doc.setTextColor('#000000');
+  return startY + boxH + 24;
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, error: 'Method not allowed' });
@@ -25,11 +55,8 @@ export default async function handler(req, res) {
       doc.setFontSize(14);
       doc.text('Color Palette', 20, y);
       y += 8;
+      y = addColorPalette(doc, result.colors, y);
       doc.setFontSize(11);
-      result.colors.forEach(c => {
-        doc.text(`${c.role}: ${c.name} (${c.hex})`, 20, y);
-        y += 7;
-      });
       y += 4;
     }
 
@@ -39,11 +66,11 @@ export default async function handler(req, res) {
       y += 8;
       doc.setFontSize(11);
       if (result.fonts.heading) {
-        doc.text(`Heading: ${result.fonts.heading.name} — ${result.fonts.heading.use}`, 20, y);
+        doc.text(`Heading: ${result.fonts.heading.name} - ${result.fonts.heading.use}`, 20, y);
         y += 7;
       }
       if (result.fonts.body) {
-        doc.text(`Body: ${result.fonts.body.name} — ${result.fonts.body.use}`, 20, y);
+        doc.text(`Body: ${result.fonts.body.name} - ${result.fonts.body.use}`, 20, y);
         y += 7;
       }
       y += 4;
